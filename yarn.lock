@@ -2576,7 +2576,7 @@ react-test-renderer@^16.3.0-alpha.1:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react@^16.3:
+react@^16.4.0-alpha.7926752:
   version "16.4.0-alpha.7926752"
   resolved "https://registry.npmjs.org/react/-/react-16.4.0-alpha.7926752.tgz#f7a91b9474c26084e55e7c025ff4fe6378e2e506"
   dependencies:
