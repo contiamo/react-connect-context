@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`connectContext Should map context to props while preserving existing props 1`] = `
+<div>
+  <h1>
+    Welcome to my App!
+  </h1>
+  <div>
+    <p>
+      Sup my frand
+    </p>
+    <div>
+      I have looked into context and I've seen the color is: 
+      red
+      I also get my own props like 
+      sup
+      !
+    </div>
+  </div>
+</div>
+`;
