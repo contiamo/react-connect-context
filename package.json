@@ -1,10 +1,13 @@
 {
   "name": "react-connect-context",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
   "files": ["index.js"],
   "author": "Tejas Kumar <tejas@contiamo.com>",
+  "repository": {
+    "url": "git@github.com:Contiamo/react-connect-context.git"
+  },
   "dependencies": {
     "react": "^16.3"
   },
