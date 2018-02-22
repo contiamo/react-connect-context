@@ -1,6 +1,8 @@
 # `react-connect-context`
 
-A _really_ simple wrapper that connects a React Context (new in React 16.3) to a component by mapping the context to props. The API is identical to Redux' `connect()` higher-order-component, so it should be fairly easy to adopt for people coming from the Redux world.
+A _really_ simple wrapper that connects a [React Context (new in React 16.3)](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md) to a component by mapping a object-based context to a given component's props.
+
+[Try it out!](https://codesandbox.io/s/p9rv0rp59m)
 
 ## Getting Started
 
@@ -68,8 +70,10 @@ render(
 
 ## Why?
 
-With some of our internal applications at Contiamo, the render prop style API of React 16's limitations... limit us: particularly the inability to use a consumed context value in component lifecycle hooks. One solution to this is to pass the context through props. Instead of repeatedly writing "context containers" that pass context objects to container components through props that _further_ pass state to presentational components through props, this function allows us to give any component easy access to a created context.
+With some of our internal applications at Contiamo, the render-prop–style API of React 16's Context API proves to be a bit limiting: [particularly the inability to use a consumed context value in component lifecycle hooks](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#class-based-api). One solution to this is to pass the context through props.
+
+Instead of repeatedly writing "context containers" that pass context objects to container components through props that _further_ pass state to presentational components through props, this function allows us to give any component easy access to a created context through props, allowing for more idiomatic, predictable code.
 
 ## Gotchas
 
-The Context value _has_ to be an object since it maps to props by key/value pairs. _Be careful_ if your context is just a string, as in React's RFC example.
+The Context value _has_ to be an object since it maps to props by key/value pairs. _Be careful_ if your context is just a string, as in the [basic example from React's RFC](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#basic-example).

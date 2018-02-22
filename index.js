@@ -1,5 +1,15 @@
 import React from "react"
 
+const mapContextToProps = contextValue =>
+
+/**
+ * mapContextToProps = (context) => ({
+ *  propName: context.value,
+ * }))  
+ * 
+ * connectContext(mapContextToProps)(MyComponent)
+ */
+
 export const connectContext = ContextConsumer => Component => props => {
   if (!ContextConsumer.currentValue instanceof Object) {
     throw new Error(`react-connect-context: the current value of the given context identifier is _not_ an object,
