@@ -1,11 +1,9 @@
 {
   "name": "react-connect-context",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "lib/bundle.js",
   "license": "MIT",
-  "files": [
-    "index.js"
-  ],
+  "files": ["lib/bundle.js"],
   "author": "Tejas Kumar <tejas@contiamo.com>",
   "repository": {
     "url": "git@github.com:Contiamo/react-connect-context.git"
@@ -23,6 +21,8 @@
     "babel-preset-react": "^6.24.1",
     "jest": "^22.4.0",
     "react-test-renderer": "^16.3.0-alpha.1",
-    "regenerator-runtime": "^0.11.1"
+    "regenerator-runtime": "^0.11.1",
+    "rollup": "^0.56.2",
+    "rollup-plugin-babel": "^3.0.3"
   }
 }
