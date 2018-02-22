@@ -12,7 +12,7 @@ A _really_ simple wrapper that connects a [React Context (new in React 16.3)](ht
 
 ### Full Example
 
-Live demo: [![Edit react-connect-context demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/p9rv0rp59m)
+[![Edit react-connect-context demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/p9rv0rp59m)
 
 ```jsx
 import React from "react"
