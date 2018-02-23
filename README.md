@@ -74,6 +74,20 @@ render(
 )
 ```
 
+## Frequently Asked Questions
+
+### Can I pick state and only re-render when necessary?
+
+Sure. Consider using [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) or [`shouldComponentUpdate`](https://reactjs.org/docs/react-component.html#shouldcomponentupdate) to let your components know when or when _not_ to update.
+
+Additionally, unlike [Redux](https://github.com/reactjs/redux), React 16.3 allows the creation of _multiple_, composable `Context`s, so ideally, you'd be using a `Context` that is small enough to house _just the information_ that you'd like to reuse in order to properly [separate concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and correctly use the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege)] when passing context around.
+
+### Can I map my context object's properties to _different_ props on my component?
+
+For now, _no_. This particular tool is designed to provide a nice cascade of props: if a component has a prop on it, like `color` from the above example, _that_ prop is used. If it doesn't have a prop, but the prop exists on a `Context`, _its_ prop is used.
+
+I would again toot the horn of using multiple small contexts here as above.
+
 ## Gotchas
 
 The Context value _has_ to be an object since it maps to props by key/value pairs. _Be careful_ if your context is just a string, as in the [basic example from React's RFC](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#basic-example). This will throw an error that will lead you here. :)
