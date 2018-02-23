@@ -76,4 +76,6 @@ render(
 
 The Context value _has_ to be an object since it maps to props by key/value pairs. _Be careful_ if your context is just a string, as in the [basic example from React's RFC](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#basic-example). This will throw an error that will lead you here. :)
 
+---
+
 Made with ❤️ at [Contiamo](https://contiamo.com) in Berlin.
