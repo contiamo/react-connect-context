@@ -1,6 +1,6 @@
 # `react-connect-context`
 
-With some of our internal applications at Contiamo, the [render-prop–style API of React 16.3's new Context API](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md) proves to be a bit limiting: [particularly the inability to use a consumed context value in component lifecycle hooks](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#class-based-api). One solution to this is to pass the context through props.
+With some of our internal applications at Contiamo, the [render-prop–style API of React 16.3's new Context API](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md) proves to be a bit limiting: [particularly the inability to use a consumed context value in component lifecycle hooks](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#class-based-api). One solution to this is to pass an object _through context_, and then through props.
 
 Instead of repeatedly writing "context containers" that pass context objects to container components through props that _further_ pass state to presentational components through props, this tiny function allows us to give any component easy access to a created context through props, allowing for more idiomatic, predictable code.
 
