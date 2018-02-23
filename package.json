@@ -3,9 +3,7 @@
   "version": "1.0.1",
   "main": "lib/bundle.js",
   "license": "MIT",
-  "files": [
-    "lib/bundle.js"
-  ],
+  "files": ["lib/bundle.js"],
   "author": "Tejas Kumar <tejas@contiamo.com>",
   "repository": {
     "url": "git@github.com:Contiamo/react-connect-context.git"
@@ -19,7 +17,7 @@
   "scripts": {
     "test": "jest",
     "build": "jest && rollup index.js -c",
-    "ci": "npm run test --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "ci": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "prepublish": "npm run build"
   },
   "devDependencies": {
