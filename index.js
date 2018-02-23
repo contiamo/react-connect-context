@@ -6,7 +6,7 @@ export const connectContext = ContextConsumer => Component => props => {
 and therefore cannot be passed as props to ${Component.name}. Please check the value in the context
 and try again.
 
-More info: https://github.com/Contiamo/react-connect-context`)
+More info: https://github.com/Contiamo/react-connect-context#gotchas`)
   }
   return <ContextConsumer>{context => <Component {...context} {...props} />}</ContextConsumer>
 }
