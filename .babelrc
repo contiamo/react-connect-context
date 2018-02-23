@@ -3,6 +3,9 @@
   "env": {
     "test": {
       "presets": ["env", "react"]
+    },
+    "ci": {
+      "presets": ["env", "react"]
     }
   }
 }
