@@ -3,3 +3,7 @@ node_js:
   - "node"
 
 script: npm run ci
+
+env:
+  global:
+  - COVERALLS_REPO_TOKEN: "qZ1EoUOR3Ipr0WESJny4FncOEpwySY8FM"
