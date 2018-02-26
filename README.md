@@ -23,13 +23,10 @@ If a component has a prop that collides with a context-passed-through prop, the 
 ```jsx
 import React from "react"
 import { render } from "react-dom"
+import { connectContext } from "react-connect-context"
 
 // CHANGE ME TO CHANGE THE CONTEXT FOR THE WHOLE APP!
 const COLOR_PASSED_THROUGH_CONTEXT = "red"
-
-const connectContext = ContextConsumer => Component => props => (
-  <ContextConsumer>{context => <Component {...context} {...props} />}</ContextConsumer>
-)
 
 class App extends React.Component {
   render() {
