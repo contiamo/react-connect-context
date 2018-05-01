@@ -19,3 +19,18 @@ exports[`connectContext Should map context to props while preserving existing pr
   </div>
 </div>
 `;
+
+exports[`connectContext Should use the custom mergeContextWithProps function if provided 1`] = `
+<div>
+  <p>
+    Sup my frand
+  </p>
+  <div>
+    I have looked into context and I've seen the color is: 
+    green
+    I also get my own props like 
+    sup
+    !
+  </div>
+</div>
+`;
