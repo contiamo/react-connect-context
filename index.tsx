@@ -1,6 +1,6 @@
 import * as React from "react";
 
-type MergeContextWithProps<C, P> = (context: C, props: P) => C & P;
+export type MergeContextWithProps<C, P> = (context: C, props: P) => C & P;
 
 function defaultMergeFn<C, P>(context: C, props: P): C & P {
   return Object.assign({}, context, props);
