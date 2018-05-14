@@ -23,6 +23,9 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "@types/react": "^16.3.13",
+    "@types/react-dom": "^16.0.5",
     "babel-core": "^6.26.0",
     "babel-jest": "^22.4.0",
     "babel-preset-env": "^1.6.1",
@@ -32,6 +35,8 @@
     "react-test-renderer": "^16.3.0-alpha.1",
     "regenerator-runtime": "^0.11.1",
     "rollup": "^0.56.2",
-    "rollup-plugin-babel": "^3.0.3"
+    "rollup-plugin-babel": "^3.0.3",
+    "ts-jest": "^22.4.4",
+    "typescript": "^2.8.3"
   }
 }
