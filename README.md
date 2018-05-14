@@ -28,7 +28,7 @@ import { connectContext } from "react-connect-context"
 // CHANGE ME TO CHANGE THE CONTEXT FOR THE WHOLE APP!
 const COLOR_PASSED_THROUGH_CONTEXT = "red"
 
-interface ContextProps {
+interface ContextValue {
     color: string;
 }
 
@@ -65,10 +65,10 @@ const Content: React.SFC<ContentProps> = ({ children, color, myProp }) => (
 )
 
 // Make a context.
-const Context = React.createContext<ContextProps>({ color: "red" })
+const Context = React.createContext<ContextValue>({ color: "red" })
 
 // Pass the consumer to our function.
-const ConnectedContent = connectContext<ContextProps, ContentProps>(Context.Consumer)(Content)
+const ConnectedContent = connectContext<ContextValue, ContentProps>(Context.Consumer)(Content)
 
 // Render things, wrapping all in the provider.
 render(
