@@ -28,12 +28,21 @@ import { connectContext } from "react-connect-context"
 // CHANGE ME TO CHANGE THE CONTEXT FOR THE WHOLE APP!
 const COLOR_PASSED_THROUGH_CONTEXT = "red"
 
+interface ContextProps {
+    color: string;
+}
+
+interface ContentProps {
+    myProp: string;
+    color: string;
+}
+
 class App extends React.Component {
   render() {
     return (
       <div className="demo">
         <Header>Welcome to my App!</Header>
-        <ConnectedContent myProp="THIS IS MY PROP, HI!">
+        <ConnectedContent myProp="THIS IS MY PROP, HI!" >
           Hello! I've written this component so that Magical Context-based text appears after children!
         </ConnectedContent>
       </div>
@@ -42,14 +51,13 @@ class App extends React.Component {
 }
 
 // Presentational, nested components
-const Header = ({ children }) => <h1>{children}</h1>
-const Content = ({ children, color, myProp }) => (
+const Header: React.SFC = ({ children }) => <h1>{children}</h1>
+const Content: React.SFC<ContentProps> = ({ children, color, myProp }) => (
   <div>
     <p>{children}</p>
     <div>
       I have looked into context and I've seen the color is:
       <span style={{ color }}>
-        {" "}
         <strong>{color}</strong>
       </span>! I also get my own props like <strong>{myProp}</strong>!
     </div>
@@ -57,10 +65,10 @@ const Content = ({ children, color, myProp }) => (
 )
 
 // Make a context.
-const Context = React.createContext({ color: "red" })
+const Context = React.createContext<ContextProps>({ color: "red" })
 
 // Pass the consumer to our function.
-const ConnectedContent = connectContext(Context.Consumer)(Content)
+const ConnectedContent = connectContext<ContextProps, ContentProps>(Context.Consumer)(Content)
 
 // Render things, wrapping all in the provider.
 render(
