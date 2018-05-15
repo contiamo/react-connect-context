@@ -1,10 +1,19 @@
-import React from "react"
+import * as React from "react"
 import renderer from "react-test-renderer"
+import { connectContext, MergeContextWithProps } from "../"
+import "jest"
 
-import { connectContext } from "../"
-const Context = React.createContext({ color: "red" })
-const Header = ({ children }) => <h1>{children}</h1>
-const Content = ({ children, color, myProp }) => (
+interface ContentProps {
+  color: string
+  myProp: string
+}
+
+interface ContextValue {
+  color: string
+}
+
+const Context = React.createContext<ContextValue>({ color: "red" })
+const Content: React.SFC<ContentProps> = ({ children, color, myProp }) => (
   <div>
     <p>{children}</p>
     <div>
@@ -15,22 +24,20 @@ const Content = ({ children, color, myProp }) => (
 )
 
 describe("connectContext", () => {
-  it("Should map context to props while preserving existing props", () => {
-    const ConnectedContent = connectContext(Context.Consumer)(Content)
+  it("should map context to props while preserving existing props", () => {
+    const ConnectedContent = connectContext<ContextValue, ContentProps>(
+      Context.Consumer
+    )(Content)
 
-    class App extends React.Component {
-      render() {
-        return (
-          <div>
-            <Header>Welcome to my App!</Header>
-            <ConnectedContent myProp="sup">Sup my frand</ConnectedContent>
-          </div>
-        )
-      }
-    }
+    const App = () => (
+      <div>
+        <ConnectedContent myProp="test">Hello</ConnectedContent>
+      </div>
+    )
+
     const tree = renderer
       .create(
-        <Context.Provider value={{ color: "red" }}>
+        <Context.Provider value={{ color: "green" }}>
           <App />
         </Context.Provider>
       )
@@ -40,11 +47,18 @@ describe("connectContext", () => {
   })
 
   it("Should use the custom mergeContextWithProps function if provided", () => {
-    const mergeContextWithProps = (context, props) => ({ ...props, ...context })
+    const mergeContextWithProps: MergeContextWithProps<
+      ContextValue,
+      ContentProps
+    > = (context, props) => {
+      return ({ ...props, ...context })
+    }
+
     const ConnectedContent = connectContext(
       Context.Consumer,
       mergeContextWithProps
     )(Content)
+
     const AppWithPropsConflict = () => (
       <ConnectedContent myProp="sup" color="red">
         Sup my frand
