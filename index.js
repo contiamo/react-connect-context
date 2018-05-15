@@ -1,12 +1,25 @@
 import React from "react"
 
-export const connectContext = ContextConsumer => Component => props => {
-  if (!ContextConsumer.currentValue instanceof Object) {
-    throw new Error(`react-connect-context: the current value of the given context identifier is _not_ an object,
-and therefore cannot be passed as props to ${Component.name}. Please check the value in the context
-and try again.
+const defaultMergeFn = (context, props) => Object.assign({}, context, props)
 
-More info: https://github.com/Contiamo/react-connect-context#gotchas`)
+export const connectContext = (
+  ContextConsumer,
+  mergeContextWithProps = defaultMergeFn
+) => Component => props => {
+  if (!ContextConsumer.currentValue instanceof Object) {
+    throw new Error(
+      `react-connect-context: the current value of the given context identifier is _not_ an object,
+    and therefore cannot be passed as props to ${
+      Component.name
+    }. Please check the value in the context
+    and try again.
+
+    More info: https://github.com/Contiamo/react-connect-context#gotchas`
+    )
   }
-  return <ContextConsumer>{context => <Component {...context} {...props} />}</ContextConsumer>
+  return (
+    <ContextConsumer>
+      {context => <Component {...mergeContextWithProps(context, props)} />}
+    </ContextConsumer>
+  )
 }

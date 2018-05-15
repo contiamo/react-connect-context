@@ -14,25 +14,47 @@ const Content = ({ children, color, myProp }) => (
   </div>
 )
 
-const ConnectedContent = connectContext(Context.Consumer)(Content)
-
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <Header>Welcome to my App!</Header>
-        <ConnectedContent myProp="sup">Sup my frand</ConnectedContent>
-      </div>
-    )
-  }
-}
-
 describe("connectContext", () => {
   it("Should map context to props while preserving existing props", () => {
+    const ConnectedContent = connectContext(Context.Consumer)(Content)
+
+    class App extends React.Component {
+      render() {
+        return (
+          <div>
+            <Header>Welcome to my App!</Header>
+            <ConnectedContent myProp="sup">Sup my frand</ConnectedContent>
+          </div>
+        )
+      }
+    }
     const tree = renderer
       .create(
         <Context.Provider value={{ color: "red" }}>
           <App />
+        </Context.Provider>
+      )
+      .toJSON()
+
+    expect(tree).toMatchSnapshot()
+  })
+
+  it("Should use the custom mergeContextWithProps function if provided", () => {
+    const mergeContextWithProps = (context, props) => ({ ...props, ...context })
+    const ConnectedContent = connectContext(
+      Context.Consumer,
+      mergeContextWithProps
+    )(Content)
+    const AppWithPropsConflict = () => (
+      <ConnectedContent myProp="sup" color="red">
+        Sup my frand
+      </ConnectedContent>
+    )
+
+    const tree = renderer
+      .create(
+        <Context.Provider value={{ color: "green" }}>
+          <AppWithPropsConflict />
         </Context.Provider>
       )
       .toJSON()
