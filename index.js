@@ -1,6 +1,6 @@
 import React from "react"
 
-const defaultMergeFn = (context, props) => ({ ...context, ...props })
+const defaultMergeFn = (context, props) => Object.assign({}, context, props)
 
 export const connectContext = (
   ContextConsumer,
