@@ -18,7 +18,7 @@ If a component has a prop that collides with a context-passed-through prop, the 
 
 ### Full Example
 
-[![Edit react-connect-context demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/p9rv0rp59m)
+[![Edit react-connect-context demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/p9rv0rp59m) [![Greenkeeper badge](https://badges.greenkeeper.io/contiamo/react-connect-context.svg)](https://greenkeeper.io/)
 
 ```jsx
 import React from "react"
