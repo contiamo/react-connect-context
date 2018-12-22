@@ -17,6 +17,4 @@ function recursiveConsume(Consumers, Component, props = {}) {
   )
 }
 
-export default (Consumer, ...otherConsumers) => Component => props => (
-  recursiveConsume([Consumer, ...otherConsumers], Component, props)
-)
+export default (...Consumers) => Component => props => recursiveConsume(Consumers, Component, props)
