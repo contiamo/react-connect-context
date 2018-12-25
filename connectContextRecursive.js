@@ -17,4 +17,4 @@ function recursiveConsume(Consumers, Component, props = {}) {
   )
 }
 
-export default (...Consumers) => Component => props => recursiveConsume(Consumers, Component, props)
+export default (...Consumers) => Component => props => recursiveConsume(Array.from(Consumers), Component, props)
