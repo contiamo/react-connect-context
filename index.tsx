@@ -69,7 +69,7 @@ export function connectContext<Context, ContextProps extends Object = Context>(
 
     hoistNonReactStatics(ConnectedComponent, Component);
     ConnectedComponent.propTypes = (Component.propTypes as any) as React.ValidationMap<OwnProps>;
-    ConnectedComponent.displayName = `connectContext(${Component.displayName || Component.name || ''})`;
+    ConnectedComponent.displayName = `connectContext(${Component.displayName || Component.name || ""})`;
 
     return ConnectedComponent;
   };

@@ -184,4 +184,19 @@ describe("connectContext", () => {
       );
     }).toThrow(Error);
   });
+
+  it("sets the displayName", () => {
+    const createContainer = connectContext<ContextType, ContextPropsType>(Context.Consumer);
+
+    const ConnectedContent1 = createContainer<MergedPropsType>(Content);
+    expect(ConnectedContent1.displayName).toBe("connectContext(Content)");
+
+    const Content2: React.SFC<MergedPropsType> = () => <div />;
+    Content2.displayName = "ContentTwo";
+    const ConnectedContent2 = createContainer<MergedPropsType>(Content2);
+    expect(ConnectedContent2.displayName).toBe("connectContext(ContentTwo)");
+
+    const ConnectedContent3 = createContainer<MergedPropsType>(() => <div />);
+    expect(ConnectedContent3.displayName).toBe("connectContext()");
+  });
 });
