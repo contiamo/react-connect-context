@@ -239,91 +239,67 @@ render(
 
 ### connectContext
 
-```tsx
-connectContext<Context, ContextProps extends Object = Context>(
-  ContextConsumer: React.Consumer<Context>,
-  mapContextToProps?: MapContextToProps<Context, ContextProps, OwnProps>,
-  mergeProps?: MergeProps<ContextProps, OwnProps, MergedProps>
-): createContainer
-```
-
 Factory function that creates a container component HOC to consume context `Context` and map values to match `ContextProps`.
 
-#### Arguments
+```tsx
+connectContext<Context, ContextProps extends Object = Context>(
+  // The React Consumer component.
+  ContextConsumer: React.Consumer<Context>,
 
-|Name|Description|Default|
-|:---|:---|:---|
-|`ContextConsumer`|The React Consumer component.|*None*|
-|`mapContextToProps`|A function that maps the consumed context value to props to pass to the component.|`context => context`<br><small>*(requires context value to be an object)*</small>|
-|`mergeProps`|A function that merges the props that have been mapped from context values with the props passed to the connected component.|`(contextProps, ownProps) => ({ ...contextProps, ...ownProps })`|
+  // A function that maps the consumed context value to props to pass to
+  // the component. The default function requires the context value to be
+  // an object and maps its properties to component props.
+  mapContextToProps:
+    MapContextToProps<Context, ContextProps, OwnProps> = context => context,
 
-#### Returns
-
-An HOC that wraps a connected component.
+  // A function that merges the props that have been mapped from context
+  // values with the props passed to the connected component. The default
+  // function merges context props with the passed props, with the latter
+  // overwriting the former.
+  mergeProps:
+    MergeProps<ContextProps, OwnProps, MergedProps> =
+    (contextProps, ownProps) => ({ ...contextProps, ...ownProps })
+): createContainer // HOC to connect a component.
+```
 
 ### createContainer
 
+An HOC that returns a connected component that accepts props `OwnProps` and derives `ContextProps` to merge into `MergedProps`. It returns a component that accepts `OwnProps` as props and renders the given component with `MergedProps`.
+
 ```tsx
 createContainer<MergedProps extends ContextProps, OwnProps = Partial<MergedProps>>(
+  // The component to connect.
   Component: React.SFC<MergedProps>
-): React.SFC<OwnProps>
+): React.SFC<OwnProps> // The container component.
 ```
-
-An HOC that returns a connected component that accepts props `OwnProps` and renders the given component that accepts props `MergedProps`.
-
-#### Arguments
-
-|Name|Description|Default|
-|:---|:---|:---|
-|`Component`|The component to connect.|*None*|
-
-#### Returns
-
-A React component that will map and pass context down to the wrapped component as props.
 
 ### MapContextToProps
 
+A function type that maps the consumed context value `Context` and props passed to the connected component `OwnProps` to a subset of the props that can be derived from context `ContextProps`, to pass to the component.
+
 ```tsx
 type MapContextToProps<Context, ContextProps, OwnProps> = (
+  // The consumed context value.
   context: Context,
+
+  // The props passed to the connected component.
   ownProps: OwnProps
-) => ContextProps
+) => ContextProps // The props derived from context.
 ```
-
-A function type that maps the consumed context value `Context` and props passed to the connected component `OwnProps` to a subset of the props to pass to the component `ContextProps`.
-
-#### Arguments
-
-|Name|Description|
-|:---|:---|
-|`context`|The consumed context value.|
-|`ownProps`|The props passed to the connected component.|
-
-#### Returns
-
-The props to pass to the component that could be derived from the context.
 
 ### MergeProps
 
+A function type that merges the props that have been mapped from context `ContextProps` with the props passed to the connected component `OwnProps` to return all the props `MergedProps`, to pass to the wrapped component.
+
 ```tsx
 type MergeProps<ContextProps, OwnProps, MergedProps> = (
+  // The result of `mapContextToProps`.
   contextProps: ContextProps,
+
+  // The props passed to the connected component.
   ownProps: OwnProps
-) => MergedProps
+) => MergedProps // The props to pass to the given component.
 ```
-
-A function that merges the props that have been mapped from context `ContextProps` with the props passed to the connected component `OwnProps` to return all the props `MergedProps` to pass to the wrapped component.
-
-#### Arguments
-
-|Name|Description|
-|:---|:---|:---|
-|`contextProps`|The result of `mapContextToProps`.|
-|`ownProps`|The props passed to the connected component.|
-
-#### Returns
-
-The complete props to pass to the wrapped component.
 
 ## Frequently Asked Questions
 
