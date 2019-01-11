@@ -16,7 +16,9 @@ If a component has a prop that collides with a context-passed-through prop, the 
 1. At the top of your file, `import { connectContext } from "react-connect-context"`
 1. Wrap your component in the function as so: `connectContext(Context.Consumer)(MyComponent)`
 
-### Full Example
+### Examples
+
+#### Introductory example
 
 [![Edit react-connect-context demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/p9rv0rp59m)
 
@@ -25,34 +27,26 @@ import React from "react"
 import { render } from "react-dom"
 import { connectContext } from "react-connect-context"
 
-// CHANGE ME TO CHANGE THE CONTEXT FOR THE WHOLE APP!
-const COLOR_PASSED_THROUGH_CONTEXT = "red"
-
-interface ContextValue {
-    color: string;
+// The shape of the context value
+interface ContextType {
+  color: string
 }
 
-interface ContentProps {
-    myProp: string;
-    color: string;
+// The shape of the props passed to your component
+interface MergedPropsType extends ContextType {
+  children: React.ReactNode
+  myProp: string
 }
 
-class App extends React.Component {
-  render() {
-    return (
-      <div className="demo">
-        <Header>Welcome to my App!</Header>
-        <ConnectedContent myProp="THIS IS MY PROP, HI!" >
-          Hello! I've written this component so that Magical Context-based text appears after children!
-        </ConnectedContent>
-      </div>
-    )
-  }
-}
+// Create a new React Context instance
+const Context = React.createContext<ContextType>({ color: "red" })
 
-// Presentational, nested components
-const Header: React.SFC = ({ children }) => <h1>{children}</h1>
-const Content: React.SFC<ContentProps> = ({ children, color, myProp }) => (
+// Create an HOC for connecting your component to context
+const createContainer = connectContext<ContextType>(Context.Consumer)
+
+// The connected component will receive the props passed in as well as values
+// from the context object by default
+const Content: React.SFC<MergedPropsType> = ({ children, color, myProp }) => (
   <div>
     <p>{children}</p>
     <div>
@@ -64,15 +58,21 @@ const Content: React.SFC<ContentProps> = ({ children, color, myProp }) => (
   </div>
 )
 
-// Make a context.
-const Context = React.createContext<ContextValue>({ color: "red" })
+// Call the HOC on the component to connect it to context
+const ConnectedContent = createContainer<MergedPropsType>(Content)
 
-// Pass the consumer to our function.
-const ConnectedContent = connectContext<ContextValue, ContentProps>(Context.Consumer)(Content)
+const App: React.SFC = () => (
+  <div className="demo">
+    <ConnectedContent myProp="THIS IS MY PROP, HI!">
+      Hello! I've written this component so that Magical Context-based text
+      appears after children!
+    </ConnectedContent>
+  </div>
+)
 
-// Render things, wrapping all in the provider.
+// Render the connected components in the provider
 render(
-  <Context.Provider value={{ color: COLOR_PASSED_THROUGH_CONTEXT }}>
+  <Context.Provider value={{ color: "red" }}>
     <App />
   </Context.Provider>,
   document.querySelector("#root")
@@ -84,41 +84,160 @@ render(
 This example shows how a context value can be mapped to a different prop name or value.
 
 ```js
-const Content = ({ isRed }) => (
-  <p>This pen {isRed ? "is" : "is not"} red.</p>
+import React from "react"
+import { render } from "react-dom"
+import { connectContext } from "react-connect-context"
+
+interface ContextType {
+  color: string
+}
+
+// The shape of the props that have been derived from context
+interface ContextPropsType {
+  isRed: boolean
+}
+
+// The shape of the props that are not derived from context and may be
+// passed to the connected component
+interface OwnPropsType {
+  myProp: string
+}
+
+// The shape of the props passed to the connected component
+interface MergedPropsType extends ContextPropsType, OwnPropsType {}
+
+const Context = React.createContext<ContextType>({ color: "red" })
+
+const Content: React.SFC<MergedPropsType> = ({ isRed, myProp }) => (
+  <p>This pen {isRed ? "is" : "is not"} red. My prop is {myProp}.</p>
 )
 
-const ConnectedContent = connectContext(
+// ContextPropsType can be used when the result of mapContextToProps does
+// not match the shape of ContextType
+const createContainer = connectContext<ContextType, ContextPropsType>(
   Context.Consumer,
   context => ({
     isRed: context.color === "red"
   })
-)(Content)
+)
+
+// OwnPropsType can be used to define the props on the wrapped component
+// when additional props not inferred from context are provided
+const ConnectedContent = createContainer<
+  MergedPropsType,
+  OwnPropsType
+>(Content)
+
+render(
+  <Context.Provider value={{ color: "red" }}>
+    <App />
+  </Context.Provider>,
+  document.querySelector("#root")
+)
 ```
 
 #### Customizing prop merging
 
-This example shows how you can customize the merge behavior to make context props overwrite the props passed to the component.
+This example shows how you can customize the merge behavior. Here we even map a non-context prop to another key.
 
 ```js
-const Content = ({ color }) => (
-  <p>The pen is {color}</p>
+import React from "react"
+import { render } from "react-dom"
+import { connectContext } from "react-connect-context"
+
+interface ContextType {
+  color: string
+}
+
+interface OwnPropsType {
+  theProp: string
+}
+
+interface MergedPropsType extends ContextType, OwnPropsType {}
+
+const Context = React.createContext<ContextType>({ color: "red" })
+
+const Content: React.SFC<MergedPropsType> = ({ color, theProp }) => (
+  <p>This pen {isRed ? "is" : "is not"} red. My prop is {theProp}.</p>
 )
 
-const ConnectedContent = connectContext(
+const createContainer = connectContext<ContextType>(
   Context.Consumer,
-  undefined,
-  (context, props) => ({ ...props, ...context })
-)(Content)
+  null,
+  // Merge context properties into props and translate myProp to theProp
+  (context, props) => ({
+    ...context,
+    theProp: props.myProp
+  })
+)
 
-// when context value is `{ color: "blue" }`:
-// <ConnectedContent>The pen is blue</ConnectedContent>
-// <ConnectedContent color="red">The pen is blue</ConnectedContent>
+const ConnectedContent = createContainer<
+  MergedPropsType,
+  OwnPropsType
+>(Content)
+
+render(
+  <Context.Provider value={{ color: "red" }}>
+    <App />
+  </Context.Provider>,
+  document.querySelector("#root")
+)
+```
+
+#### Using non-object context values with `mapContextToProps`
+
+This example shows how you can allow for non-object context values if you provide a custom `mapContextToProps` function.
+
+```js
+import React from "react"
+import { render } from "react-dom"
+import { connectContext } from "react-connect-context"
+
+// Context value is not an object
+type ContextType = string
+
+interface ContextPropsType {
+  color: string
+}
+
+interface OwnPropsType {
+  myProp: string
+}
+
+interface MergedPropsType extends ContextPropsType, OwnPropsType {}
+
+const Context = React.createContext<ContextType>({ color: "red" })
+
+const Content: React.SFC<MergedPropsType> = ({ color, theProp }) => (
+  <p>This pen {isRed ? "is" : "is not"} red. My prop is {theProp}.</p>
+)
+
+const createContainer = connectContext<
+  ContextType,
+  ContextPropsType
+>(
+  Context.Consumer,
+  // Context value is mapped to an object that conforms to
+  // ContextPropsType
+  context => ({ color: context })
+)
+
+const ConnectedContent = createContainer<
+  MergedPropsType,
+  OwnPropsType
+>(Content)
+
+render(
+  <Context.Provider value="red">
+    <App />
+  </Context.Provider>,
+  document.querySelector("#root")
+)
 ```
 
 ## API
 
-### `connectContext<Context, ContextProps = Context>`
+### `connectContext<Context, ContextProps extends Object = Context>`
 
 Factory function that creates a container component HOC to consume context `Context` and map values to match `ContextProps`.
 
@@ -126,26 +245,26 @@ Factory function that creates a container component HOC to consume context `Cont
 
 |Name|Type|Description|Default|
 |:---|:---|:---|:---|
-|ContextConsumer|`React.Consumer<Context>`|The React Consumer component.|*None*|
-|mapContextToProps|`MapContextToProps<Context, ContextProps, OwnProps>`|A function that maps values from the consumed context value object to props to pass to the component.|`context => context`|
-|mergeProps|`MergeProps<ContextProps, OwnProps, MergedProps>`|A function that merges the props that have been mapped from context values with the props passed to the connected component.|`(context, props) => ({ ...context, ...props })`|
+|`ContextConsumer`|`React.Consumer<Context>`|The React Consumer component.|*None*|
+|`mapContextToProps`|`MapContextToProps<Context, ContextProps, OwnProps>`|A function that maps the consumed context value to props to pass to the component.|`context => context` (requires context value to be an object)|
+|`mergeProps`|`MergeProps<ContextProps, OwnProps, MergedProps>`|A function that merges the props that have been mapped from context values with the props passed to the connected component.|`(contextProps, ownProps) => ({ ...contextProps, ...ownProps })`|
 
 #### Returns
 
 |Type|Description|
 |:---|:---|
-|`CreateComponent<MergedProps, OwnProps>`|A HOC that returns a connected component.|
+|`createContainer<MergedProps, OwnProps>`|A HOC that wraps a connected component.|
 
 ### `MapContextToProps<Context, ContextProps, OwnProps>`
 
-A function type that maps values from the consumed context value object `Context` and props passed to the connected component `OwnProps` to a subset of the props to pass to the component `ContextProps`.
+A function type that maps the consumed context value `Context` and props passed to the connected component `OwnProps` to a subset of the props to pass to the component `ContextProps`.
 
 #### Arguments
 
 |Name|Type|Description|
 |:---|:---|:---|
-|context|`Context`|The context value object.|
-|props|`OwnProps`|The props passed to the connected component.|
+|`context`|`Context`|The context value object.|
+|`ownProps`|`OwnProps`|The props passed to the connected component.|
 
 #### Returns
 
@@ -155,14 +274,14 @@ A function type that maps values from the consumed context value object `Context
 
 ### `MergeProps<ContextProps, OwnProps, MergedProps>`
 
-A function that merges the props that have been mapped from context values `ContextProps` with the props passed to the connected component `OwnProps` to return all the props `MergedProps` to pass to the wrapped component.
+A function that merges the props that have been mapped from context `ContextProps` with the props passed to the connected component `OwnProps` to return all the props `MergedProps` to pass to the wrapped component.
 
 #### Arguments
 
 |Name|Type|Description|
 |:---|:---|:---|
-|context|`ContextProps`|The result of `mapContextToProps`.|
-|props|`OwnProps`|The props passed to the connected component.|
+|`contextProps`|`ContextProps`|The result of `mapContextToProps`.|
+|`ownProps`|`OwnProps`|The props passed to the connected component.|
 
 #### Returns
 
@@ -170,15 +289,15 @@ A function that merges the props that have been mapped from context values `Cont
 |:---|:---|
 |`MergedProps`|The complete props to pass to the wrapped component.|
 
-### `CreateComponent<MergedProps extends ContextProps, OwnProps = Partial<MergedProps>>`
+### `createContainer<MergedProps extends ContextProps, OwnProps extends Object = Partial<MergedProps>>`
 
-A HOC that returns a connected component that accepts props `OwnProps` and renders the given component that accepts props `MergedProps`.
+An HOC that returns a connected component that accepts props `OwnProps` and renders the given component that accepts props `MergedProps`.
 
 #### Arguments
 
 |Name|Type|Description|Default|
 |:---|:---|:---|:---|
-|Component|`React.SFC<MergedProps>`|The component to connect.|*None*|
+|`Component`|`React.SFC<MergedProps>`|The component to connect.|*None*|
 
 #### Returns
 
@@ -193,10 +312,6 @@ A HOC that returns a connected component that accepts props `OwnProps` and rende
 Sure. Consider using [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) or [`shouldComponentUpdate`](https://reactjs.org/docs/react-component.html#shouldcomponentupdate) to let your components know when or when _not_ to update.
 
 Additionally, unlike [Redux](https://github.com/reactjs/redux), React 16.3 allows the creation of _multiple_, composable `Context`s, so ideally, you'd be using a `Context` that is small enough to house _just the information_ that you'd like to reuse in order to properly [separate concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and correctly use the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) when passing context around.
-
-## Gotchas
-
-The Context value _has_ to be an object since it maps to props by key/value pairs. _Be careful_ if your context is just a string, as in the [basic example from React's RFC](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#basic-example). This will throw an error that will lead you here. :)
 
 ---
 

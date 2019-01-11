@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`connectContext Should use the custom mapContextToProps function if provided 1`] = `
+exports[`connectContext should allow non-object context if a custom mapContextToProps function is provided 1`] = `
 <div>
   <p>
     Sup my frand
@@ -15,16 +15,15 @@ exports[`connectContext Should use the custom mapContextToProps function if prov
 </div>
 `;
 
-exports[`connectContext Should use the custom mergeProps function if provided 1`] = `
+exports[`connectContext should also pass ownProps to mapContextToProps 1`] = `
 <div>
   <p>
     Sup my frand
   </p>
   <div>
     I have looked into context and I've seen the color is: 
-    green
+    #00ff00
     I also get my own props like 
-    sup
     !
   </div>
 </div>
@@ -43,6 +42,36 @@ exports[`connectContext should map context to props while preserving existing pr
       test
       !
     </div>
+  </div>
+</div>
+`;
+
+exports[`connectContext should use the custom mapContextToProps function if provided 1`] = `
+<div>
+  <p>
+    Sup my frand
+  </p>
+  <div>
+    I have looked into context and I've seen the color is: 
+    #00ff00
+    I also get my own props like 
+    sup
+    !
+  </div>
+</div>
+`;
+
+exports[`connectContext should use the custom mergeProps function if provided 1`] = `
+<div>
+  <p>
+    Sup my frand
+  </p>
+  <div>
+    I have looked into context and I've seen the color is: 
+    green
+    I also get my own props like 
+    sup
+    !
   </div>
 </div>
 `;
