@@ -254,12 +254,32 @@ Factory function that creates a container component HOC to consume context `Cont
 |Name|Description|Default|
 |:---|:---|:---|
 |`ContextConsumer`|The React Consumer component.|*None*|
-|`mapContextToProps`|A function that maps the consumed context value to props to pass to the component.|`context => context` (requires context value to be an object)|
+|`mapContextToProps`|A function that maps the consumed context value to props to pass to the component.|`context => context`<br><small>*(requires context value to be an object)*</small>|
 |`mergeProps`|A function that merges the props that have been mapped from context values with the props passed to the connected component.|`(contextProps, ownProps) => ({ ...contextProps, ...ownProps })`|
 
 #### Returns
 
 An HOC that wraps a connected component.
+
+### createContainer
+
+```tsx
+createContainer<MergedProps extends ContextProps, OwnProps = Partial<MergedProps>>(
+  Component: React.SFC<MergedProps>
+): React.SFC<OwnProps>
+```
+
+An HOC that returns a connected component that accepts props `OwnProps` and renders the given component that accepts props `MergedProps`.
+
+#### Arguments
+
+|Name|Description|Default|
+|:---|:---|:---|
+|`Component`|The component to connect.|*None*|
+
+#### Returns
+
+A React component that will map and pass context down to the wrapped component as props.
 
 ### MapContextToProps
 
@@ -304,26 +324,6 @@ A function that merges the props that have been mapped from context `ContextProp
 #### Returns
 
 The complete props to pass to the wrapped component.
-
-### createContainer
-
-```tsx
-createContainer<MergedProps extends ContextProps, OwnProps = Partial<MergedProps>>(
-  Component: React.SFC<MergedProps>
-): React.SFC<OwnProps>
-```
-
-An HOC that returns a connected component that accepts props `OwnProps` and renders the given component that accepts props `MergedProps`.
-
-#### Arguments
-
-|Name|Description|Default|
-|:---|:---|:---|
-|`Component`|The component to connect.|*None*|
-
-#### Returns
-
-A React component that will map and pass context down to the wrapped component as props.
 
 ## Frequently Asked Questions
 
