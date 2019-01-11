@@ -1,6 +1,6 @@
 {
-  "name": "react-connect-context",
-  "version": "1.0.2",
+  "name": "@mmiller42/react-connect-context",
+  "version": "1.1.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -8,8 +8,11 @@
   ],
   "license": "MIT",
   "author": "Tejas Kumar <tejas@contiamo.com>",
+  "contributors": [
+    "Matt Miller <me@mmiller.me>"
+  ],
   "repository": {
-    "url": "git@github.com:Contiamo/react-connect-context.git"
+    "url": "git@github.com:mmiller42/react-connect-context.git"
   },
   "dependencies": {
     "hoist-non-react-statics": "^3.2.1"
