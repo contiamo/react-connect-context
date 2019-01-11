@@ -6,8 +6,6 @@ With some of our internal applications at Contiamo, the [render-prop–style API
 
 Instead of repeatedly writing "context containers" that pass context objects to container components through props that _further_ pass state to presentational components through props, this tiny function allows us to give any component easy access to a created context through props, allowing for more idiomatic, predictable code.
 
-If a component has a prop that collides with a context-passed-through prop, the component's prop has precedence. Simple.
-
 [Try it out!](https://codesandbox.io/s/p9rv0rp59m)
 
 ## Getting Started
@@ -249,15 +247,14 @@ connectContext<Context, ContextProps extends Object = Context>(
   // A function that maps the consumed context value to props to pass to
   // the component. The default function requires the context value to be
   // an object and maps its properties to component props.
-  mapContextToProps:
-    MapContextToProps<Context, ContextProps, OwnProps> = context => context,
+  mapContextToProps: MapContextToProps<Context, ContextProps, OwnProps>
+    = context => context,
 
   // A function that merges the props that have been mapped from context
   // values with the props passed to the connected component. The default
   // function merges context props with the passed props, with the latter
   // overwriting the former.
-  mergeProps:
-    MergeProps<ContextProps, OwnProps, MergedProps> =
+  mergeProps: MergeProps<ContextProps, OwnProps, MergedProps> =
     (contextProps, ownProps) => ({ ...contextProps, ...ownProps })
 ): createContainer // HOC to connect a component.
 ```
