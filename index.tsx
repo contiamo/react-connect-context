@@ -1,24 +1,29 @@
 import * as React from "react";
 
-export type MapContextToProps<C, P> = (context: C) => Partial<P>;
-export type MergeProps<P> = (context: Partial<P>, props: Partial<P>) => P;
-export type CreateComponent<P> = (Component: React.SFC<P>) => React.SFC<Partial<P>>;
+export type MapContextToProps<Context, ContextProps, OwnProps> = (context: Context, props: OwnProps) => ContextProps;
+export type MergeProps<ContextProps, OwnProps, MergedProps> = (context: ContextProps, props: OwnProps) => MergedProps;
 
-function defaultMapContextToPropsFn<C, P>(context: C): Partial<P> {
-  return context as Partial<P>;
+function defaultMapContextToPropsFn<Context, ContextProps>(context: Context): ContextProps {
+  return (context as unknown) as ContextProps;
 }
 
-function defaultMergePropsFn<P>(context: Partial<P>, props: Partial<P>): P {
-  return Object.assign({}, context, props) as P;
+function defaultMergePropsFn<ContextProps, OwnProps, MergedProps>(context: ContextProps, props: OwnProps): MergedProps {
+  return (Object.assign({}, context, props) as unknown) as MergedProps;
 }
 
-export function connectContext<C, P>(
-  ContextConsumer: React.Consumer<C>,
-  mapContextToProps: MapContextToProps<C, P> = defaultMapContextToPropsFn,
-  mergeProps: MergeProps<P> = defaultMergePropsFn
-): CreateComponent<P> {
-  return function(Component: React.SFC<P>) {
-    return function(props: Partial<P>) {
+export function connectContext<Context, ContextProps = Context>(
+  ContextConsumer: React.Consumer<Context>,
+  mapContextToProps: Function = defaultMapContextToPropsFn,
+  mergeProps: Function = defaultMergePropsFn
+) {
+  return function<
+    MergedProps extends ContextProps,
+    OwnProps = Partial<MergedProps>
+  >(Component: React.SFC<MergedProps>): React.SFC<OwnProps> {
+    const _mapContextToProps = mapContextToProps as MapContextToProps<Context, ContextProps, OwnProps>;
+    const _mergeProps = mergeProps as MergeProps<ContextProps, OwnProps, MergedProps>;
+
+    return function(props: OwnProps) {
       // TODO remove `as any` when is available in the react typing definition
       if (!(ContextConsumer as any).currentValue as any instanceof Object) {
         throw new Error(
@@ -33,7 +38,7 @@ export function connectContext<C, P>(
       }
       return (
         <ContextConsumer>
-          {(context: C) => <Component {...mergeProps(mapContextToProps(context, props), props)} />}
+          {(context: Context) => <Component {..._mergeProps(_mapContextToProps(context, props), props)} />}
         </ContextConsumer>
       );
     };

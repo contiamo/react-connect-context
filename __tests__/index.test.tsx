@@ -1,16 +1,22 @@
 import * as React from "react"
 import renderer from "react-test-renderer"
-import { connectContext, MapContextToProps, MergeProps } from "../"
+import { connectContext } from "../"
 import "jest"
-
-interface ContentProps {
-  color: string
-  myProp: string
-}
 
 interface ContextValue {
   color: string
 }
+
+interface MappedContextProps {
+  color: string
+}
+
+interface OwnProps {
+  myProp: string
+  children: string
+}
+
+interface ContentProps extends MappedContextProps, OwnProps {}
 
 const Context = React.createContext<ContextValue>({ color: "red" })
 const Content: React.SFC<ContentProps> = ({ children, color, myProp }) => (
@@ -25,9 +31,11 @@ const Content: React.SFC<ContentProps> = ({ children, color, myProp }) => (
 
 describe("connectContext", () => {
   it("should map context to props while preserving existing props", () => {
-    const ConnectedContent = connectContext<ContextValue, ContentProps>(
+    const hoc = connectContext<ContextValue, MappedContextProps>(
       Context.Consumer
-    )(Content)
+    )
+
+    const ConnectedContent = hoc<ContentProps>(Content)
 
     const App = () => (
       <div>
@@ -47,17 +55,16 @@ describe("connectContext", () => {
   })
 
   it("Should use the custom mapContextToProps function if provided", () => {
-    const mapContextToProps: MapContextToProps<
-      ContextValue,
-      ContentProps
-    > = ({ color }) => {
-      return ({ color: color === "green" ? "#00ff00" : color })
-    }
+    function mapContextToProps(context: ContextValue): MappedContextProps {
+      return { color: context.color === "green" ? "#00ff00" : context.color };
+    };
 
-    const ConnectedContent = connectContext(
+    const hoc = connectContext<ContextValue, MappedContextProps>(
       Context.Consumer,
       mapContextToProps
-    )(Content)
+    );
+
+    const ConnectedContent = hoc<ContentProps>(Content)
 
     const App = () => (
       <ConnectedContent myProp="sup">
@@ -77,18 +84,17 @@ describe("connectContext", () => {
   })
 
   it("Should use the custom mergeProps function if provided", () => {
-    const mergeProps: MergeProps<
-      ContextValue,
-      ContentProps
-    > = (context, props) => {
-      return ({ ...props, ...context })
+    function mergeProps(context: MappedContextProps, props: OwnProps): ContentProps {
+      return { ...props, ...context };
     }
 
-    const ConnectedContent = connectContext(
+    const hoc = connectContext<ContextValue, MappedContextProps>(
       Context.Consumer,
       undefined,
       mergeProps
-    )(Content)
+    );
+
+    const ConnectedContent = hoc<ContentProps>(Content)
 
     const AppWithPropsConflict = () => (
       <ConnectedContent myProp="sup" color="red">

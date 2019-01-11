@@ -118,72 +118,73 @@ const ConnectedContent = connectContext(
 
 ## API
 
-### `connectContext<C, P>`
+### `connectContext<Context, ContextProps = Context>`
 
-Factory function that creates a container component HOC to consume context `C` and wrap a component that accepts props `P`.
-
-#### Arguments
-
-|Name|Type|Description|Default|
-|:---|:---|:---|:---|
-|ContextConsumer|`React.Consumer<C>`|The React Consumer component.|*None*|
-|mapContextToProps|`MapContextToProps<C, P>`|A function that maps values from the consumed context value object to props to pass to the component.|`context => context`|
-|mergeProps|`MergeProps<P>`|A function that merges the props that have been mapped from context values with the props passed to the connected component.|`(context, props) => ({ ...context, ...props })`|
-
-#### Returns
-
-|Type|Description|
-|:---|:---|
-|`CreateComponent<P>`|A HOC that returns a connected component.|
-
-### `MapContextToProps<C, P>`
-
-A function type that maps values from the consumed context value object `C` to a subset of the props to pass to the component `P`.
-
-#### Arguments
-
-|Name|Type|Description|
-|:---|:---|:---|
-|context|`C`|The context value object.|
-
-#### Returns
-
-|Type|Description|
-|:---|:---|
-|`Partial<P>`|The props to pass to the component that could be derived from the context.|
-
-### `MergeProps<P>`
-
-A function that merges the props that have been mapped from context values with the props passed to the connected component to return all the props `P` to pass to the wrapped component.
-
-#### Arguments
-
-|Name|Type|Description|
-|:---|:---|:---|
-|context|`Partial<P>`|The result of `mapContextToProps`.|
-|props|`Partial<P>`|The props passed to the connected component.|
-
-#### Returns
-
-|Type|Description|
-|:---|:---|
-|`P`|The complete props to pass to the wrapped component.|
-
-### `CreateComponent<P>`
-
-A HOC that returns a connected component with props `P`.
+Factory function that creates a container component HOC to consume context `Context` and map values to match `ContextProps`.
 
 #### Arguments
 
 |Name|Type|Description|Default|
 |:---|:---|:---|:---|
-|Component|`React.SFC<P>`|The component to connect.|*None*|
+|ContextConsumer|`React.Consumer<Context>`|The React Consumer component.|*None*|
+|mapContextToProps|`MapContextToProps<Context, ContextProps, OwnProps>`|A function that maps values from the consumed context value object to props to pass to the component.|`context => context`|
+|mergeProps|`MergeProps<ContextProps, OwnProps, MergedProps>`|A function that merges the props that have been mapped from context values with the props passed to the connected component.|`(context, props) => ({ ...context, ...props })`|
 
 #### Returns
 
 |Type|Description|
 |:---|:---|
-|`React.SFC<Partial<P>>`|A React component that will map and pass context down to the wrapped component as props.|
+|`CreateComponent<MergedProps, OwnProps>`|A HOC that returns a connected component.|
+
+### `MapContextToProps<Context, ContextProps, OwnProps>`
+
+A function type that maps values from the consumed context value object `Context` and props passed to the connected component `OwnProps` to a subset of the props to pass to the component `ContextProps`.
+
+#### Arguments
+
+|Name|Type|Description|
+|:---|:---|:---|
+|context|`Context`|The context value object.|
+|props|`OwnProps`|The props passed to the connected component.|
+
+#### Returns
+
+|Type|Description|
+|:---|:---|
+|`ContextProps`|The props to pass to the component that could be derived from the context.|
+
+### `MergeProps<ContextProps, OwnProps, MergedProps>`
+
+A function that merges the props that have been mapped from context values `ContextProps` with the props passed to the connected component `OwnProps` to return all the props `MergedProps` to pass to the wrapped component.
+
+#### Arguments
+
+|Name|Type|Description|
+|:---|:---|:---|
+|context|`ContextProps`|The result of `mapContextToProps`.|
+|props|`OwnProps`|The props passed to the connected component.|
+
+#### Returns
+
+|Type|Description|
+|:---|:---|
+|`MergedProps`|The complete props to pass to the wrapped component.|
+
+### `CreateComponent<MergedProps extends ContextProps, OwnProps = Partial<MergedProps>>`
+
+A HOC that returns a connected component that accepts props `OwnProps` and renders the given component that accepts props `MergedProps`.
+
+#### Arguments
+
+|Name|Type|Description|Default|
+|:---|:---|:---|:---|
+|Component|`React.SFC<MergedProps>`|The component to connect.|*None*|
+
+#### Returns
+
+|Type|Description|
+|:---|:---|
+|`React.SFC<OwnProps>`|A React component that will map and pass context down to the wrapped component as props.|
 
 ## Frequently Asked Questions
 
