@@ -4,11 +4,11 @@ export type MapContextToProps<Context, ContextProps, OwnProps> = (context: Conte
 export type MergeProps<ContextProps, OwnProps, MergedProps> = (context: ContextProps, props: OwnProps) => MergedProps;
 
 function defaultMapContextToPropsFn<Context, ContextProps>(context: Context): ContextProps {
-  return (context as unknown) as ContextProps;
+  return (context as any) as ContextProps;
 }
 
 function defaultMergePropsFn<ContextProps, OwnProps, MergedProps>(context: ContextProps, props: OwnProps): MergedProps {
-  return (Object.assign({}, context, props) as unknown) as MergedProps;
+  return (Object.assign({}, context, props) as any) as MergedProps;
 }
 
 export function connectContext<Context, ContextProps = Context>(
