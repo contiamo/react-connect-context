@@ -1,23 +1,24 @@
 import * as React from "react";
 
-export type MergeContextWithProps<C, P> = (context: C, props: P) => C & P;
+export type MapContextToProps<C, P> = (context: C) => Partial<P>;
+export type MergeProps<P> = (context: Partial<P>, props: Partial<P>) => P;
+export type CreateComponent<P> = (Component: React.SFC<P>) => React.SFC<Partial<P>>;
 
-function defaultMergeFn<C, P>(context: C, props: P): C & P {
-  return Object.assign({}, context, props);
+function defaultMapContextToPropsFn<C, P>(context: C): Partial<P> {
+  return context as Partial<P>;
 }
 
-type Merge<L, R> = 
-  /** Mandatory properties */
-  Pick<L, Exclude<keyof L, keyof R>>
-  /** Optional properties */
-  & Partial<R>
+function defaultMergePropsFn<P>(context: Partial<P>, props: Partial<P>): P {
+  return Object.assign({}, context, props) as P;
+}
 
 export function connectContext<C, P>(
   ContextConsumer: React.Consumer<C>,
-  mergeContextWithProps: MergeContextWithProps<C, P> = defaultMergeFn
-) {
+  mapContextToProps: MapContextToProps<C, P> = defaultMapContextToPropsFn,
+  mergeProps: MergeProps<P> = defaultMergePropsFn
+): CreateComponent<P> {
   return function(Component: React.SFC<P>) {
-    return function(props: Merge<P, C>) {
+    return function(props: Partial<P>) {
       // TODO remove `as any` when is available in the react typing definition
       if (!(ContextConsumer as any).currentValue as any instanceof Object) {
         throw new Error(
@@ -32,7 +33,7 @@ export function connectContext<C, P>(
       }
       return (
         <ContextConsumer>
-          {context => <Component {...mergeContextWithProps(context, props as P)} />}
+          {(context: C) => <Component {...mergeProps(mapContextToProps(context, props), props)} />}
         </ContextConsumer>
       );
     };

@@ -1,6 +1,6 @@
 import * as React from "react"
 import renderer from "react-test-renderer"
-import { connectContext, MergeContextWithProps } from "../"
+import { connectContext, MapContextToProps, MergeProps } from "../"
 import "jest"
 
 interface ContentProps {
@@ -46,8 +46,38 @@ describe("connectContext", () => {
     expect(tree).toMatchSnapshot()
   })
 
-  it("Should use the custom mergeContextWithProps function if provided", () => {
-    const mergeContextWithProps: MergeContextWithProps<
+  it("Should use the custom mapContextToProps function if provided", () => {
+    const mapContextToProps: MapContextToProps<
+      ContextValue,
+      ContentProps
+    > = ({ color }) => {
+      return ({ color: color === "green" ? "#00ff00" : color })
+    }
+
+    const ConnectedContent = connectContext(
+      Context.Consumer,
+      mapContextToProps
+    )(Content)
+
+    const App = () => (
+      <ConnectedContent myProp="sup">
+        Sup my frand
+      </ConnectedContent>
+    )
+
+    const tree = renderer
+      .create(
+        <Context.Provider value={{ color: "green" }}>
+          <App />
+        </Context.Provider>
+      )
+      .toJSON()
+
+    expect(tree).toMatchSnapshot()
+  })
+
+  it("Should use the custom mergeProps function if provided", () => {
+    const mergeProps: MergeProps<
       ContextValue,
       ContentProps
     > = (context, props) => {
@@ -56,7 +86,8 @@ describe("connectContext", () => {
 
     const ConnectedContent = connectContext(
       Context.Consumer,
-      mergeContextWithProps
+      undefined,
+      mergeProps
     )(Content)
 
     const AppWithPropsConflict = () => (

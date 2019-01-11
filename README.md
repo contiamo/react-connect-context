@@ -79,6 +79,112 @@ render(
 )
 ```
 
+#### Mapping context properties to props
+
+This example shows how a context value can be mapped to a different prop name or value.
+
+```js
+const Content = ({ isRed }) => (
+  <p>This pen {isRed ? "is" : "is not"} red.</p>
+)
+
+const ConnectedContent = connectContext(
+  Context.Consumer,
+  context => ({
+    isRed: context.color === "red"
+  })
+)(Content)
+```
+
+#### Customizing prop merging
+
+This example shows how you can customize the merge behavior to make context props overwrite the props passed to the component.
+
+```js
+const Content = ({ color }) => (
+  <p>The pen is {color}</p>
+)
+
+const ConnectedContent = connectContext(
+  Context.Consumer,
+  undefined,
+  (context, props) => ({ ...props, ...context })
+)(Content)
+
+// when context value is `{ color: "blue" }`:
+// <ConnectedContent>The pen is blue</ConnectedContent>
+// <ConnectedContent color="red">The pen is blue</ConnectedContent>
+```
+
+## API
+
+### `connectContext<C, P>`
+
+Factory function that creates a container component HOC to consume context `C` and wrap a component that accepts props `P`.
+
+#### Arguments
+
+|Name|Type|Description|Default|
+|:---|:---|:---|:---|
+|ContextConsumer|`React.Consumer<C>`|The React Consumer component.|*None*|
+|mapContextToProps|`MapContextToProps<C, P>`|A function that maps values from the consumed context value object to props to pass to the component.|`context => context`|
+|mergeProps|`MergeProps<P>`|A function that merges the props that have been mapped from context values with the props passed to the connected component.|`(context, props) => ({ ...context, ...props })`|
+
+#### Returns
+
+|Type|Description|
+|:---|:---|
+|`CreateComponent<P>`|A HOC that returns a connected component.|
+
+### `MapContextToProps<C, P>`
+
+A function type that maps values from the consumed context value object `C` to a subset of the props to pass to the component `P`.
+
+#### Arguments
+
+|Name|Type|Description|
+|:---|:---|:---|
+|context|`C`|The context value object.|
+
+#### Returns
+
+|Type|Description|
+|:---|:---|
+|`Partial<P>`|The props to pass to the component that could be derived from the context.|
+
+### `MergeProps<P>`
+
+A function that merges the props that have been mapped from context values with the props passed to the connected component to return all the props `P` to pass to the wrapped component.
+
+#### Arguments
+
+|Name|Type|Description|
+|:---|:---|:---|
+|context|`Partial<P>`|The result of `mapContextToProps`.|
+|props|`Partial<P>`|The props passed to the connected component.|
+
+#### Returns
+
+|Type|Description|
+|:---|:---|
+|`P`|The complete props to pass to the wrapped component.|
+
+### `CreateComponent<P>`
+
+A HOC that returns a connected component with props `P`.
+
+#### Arguments
+
+|Name|Type|Description|Default|
+|:---|:---|:---|:---|
+|Component|`React.SFC<P>`|The component to connect.|*None*|
+
+#### Returns
+
+|Type|Description|
+|:---|:---|
+|`React.SFC<Partial<P>>`|A React component that will map and pass context down to the wrapped component as props.|
+
 ## Frequently Asked Questions
 
 ### Can I pick state and only re-render when necessary?
@@ -86,12 +192,6 @@ render(
 Sure. Consider using [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) or [`shouldComponentUpdate`](https://reactjs.org/docs/react-component.html#shouldcomponentupdate) to let your components know when or when _not_ to update.
 
 Additionally, unlike [Redux](https://github.com/reactjs/redux), React 16.3 allows the creation of _multiple_, composable `Context`s, so ideally, you'd be using a `Context` that is small enough to house _just the information_ that you'd like to reuse in order to properly [separate concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and correctly use the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) when passing context around.
-
-### Can I map my context object's properties to _different_ props on my component?
-
-For now, _no_. This particular tool is designed to provide a nice cascade of props: if a component has a prop on it, like `color` from the above example, _that_ prop is used. If it doesn't have a prop, but the prop exists on a `Context`, _its_ prop is used.
-
-I would again toot the horn of using multiple small contexts here as above.
 
 ## Gotchas
 
