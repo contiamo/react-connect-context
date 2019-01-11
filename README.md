@@ -1,29 +1,31 @@
-# `react-connect-context`
+# react-connect-context-map
 
-![Tiny](https://img.shields.io/badge/size-559%20B-brightgreen.svg?compression=gzip&label=gzipped) [![Build Status](https://travis-ci.org/Contiamo/react-connect-context.svg?branch=master)](https://travis-ci.org/Contiamo/react-connect-context) [![Coverage Status](https://coveralls.io/repos/github/Contiamo/react-connect-context/badge.svg?branch=master)](https://coveralls.io/github/Contiamo/react-connect-context?branch=master)
+> This is a fork of [https://github.com/contiamo/react-connect-context](react-connect-context).
 
-With some of our internal applications at Contiamo, the [render-prop–style API of React 16.3's new Context API](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md) proves to be a bit limiting: [particularly the inability to use a consumed context value in component lifecycle hooks](https://github.com/reactjs/rfcs/blob/master/text/0002-new-version-of-context.md#class-based-api). One solution to this is to pass an object _through context_, and then through props.
+This module exports a function factory that produces an HOC to wrap a component and provide the value of the context as props to the component, much like the [react-redux](https://react-redux.js.org/) API. The benefits of this approach versus the traditional Consumer:
 
-Instead of repeatedly writing "context containers" that pass context objects to container components through props that _further_ pass state to presentational components through props, this tiny function allows us to give any component easy access to a created context through props, allowing for more idiomatic, predictable code.
-
-[Try it out!](https://codesandbox.io/s/p9rv0rp59m)
+* All values are passed as props and can be read in your component's lifecycle methods
+* You can trivially export a "pure" version of the component as well as a connected version
+* Unlike a Redux container, the connected component can be rendered without being nested in a Provider component
+* The factory produces an HOC which can be applied to multiple components
+* You can select slices of the context value and map them to props that fit the component API
+* You can reference the props passed into the connected component when mapping the context value to props
+* You can customize the merging behavior to translate all props fed to the wrapped component
 
 ## Getting Started
 
-1. `yarn add react-connect-context`
-1. At the top of your file, `import { connectContext } from "react-connect-context"`
+1. `yarn add react-connect-context-map`
+1. At the top of your file, `import { connectContext } from "react-connect-context-map"`
 1. Wrap your component in the function as so: `connectContext(Context.Consumer)(MyComponent)`
 
 ### Examples
 
 #### Introductory example
 
-[![Edit react-connect-context demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/p9rv0rp59m)
-
 ```tsx
 import React from "react"
 import { render } from "react-dom"
-import { connectContext } from "react-connect-context"
+import { connectContext } from "react-connect-context-map"
 
 // The shape of the context value
 interface ContextType {
@@ -84,7 +86,7 @@ This example shows how a context value can be mapped to a different prop name or
 ```tsx
 import React from "react"
 import { render } from "react-dom"
-import { connectContext } from "react-connect-context"
+import { connectContext } from "react-connect-context-map"
 
 interface ContextType {
   color: string
@@ -141,7 +143,7 @@ This example shows how you can customize the merge behavior. Here we even map a 
 ```tsx
 import React from "react"
 import { render } from "react-dom"
-import { connectContext } from "react-connect-context"
+import { connectContext } from "react-connect-context-map"
 
 interface ContextType {
   color: string
@@ -189,7 +191,7 @@ This example shows how you can allow for non-object context values if you provid
 ```tsx
 import React from "react"
 import { render } from "react-dom"
-import { connectContext } from "react-connect-context"
+import { connectContext } from "react-connect-context-map"
 
 // Context value is not an object
 type ContextType = string

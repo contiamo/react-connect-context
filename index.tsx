@@ -14,13 +14,11 @@ function makeDefaultMapContextToPropsFn<
   return function defaultMapContextToPropsFn<Context extends Object, ContextProps>(context: Context): ContextProps {
     if (!(context instanceof Object)) {
       throw new Error(
-        `react-connect-context: the current value of the given context identifier is _not_ an object,
-        and therefore cannot be passed as props to ${
-        Component.name
-        }. Please check the value in the context
-        and try again.
+        `react-connect-context-map: The default mapContextToProps function requires the value of the context to be an
+        object, but ${Component.name} received context of type ${typeof context}. Either the context shape must be
+        changed, or a custom mapContextToProps function must be provided.
 
-        More info: https://github.com/Contiamo/react-connect-context#gotchas`
+        More info: https://github.com/mmiller42/react-connect-context`
       );
     }
     return (context as any) as ContextProps;
