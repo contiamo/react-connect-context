@@ -59,8 +59,9 @@ export function connectContext<Context, ContextProps extends Object = Context>(
     const ConnectedComponent: React.SFC<OwnProps> = function(ownProps: OwnProps) {
       return (
         <ContextConsumer>
-          {(context: Context) => (
-            <Component {..._mergeProps(_mapContextToProps(context, ownProps), ownProps)} />
+          {(context: Context) => React.createElement<MergedProps>(
+            Component,
+            Object.assign({}, _mergeProps(_mapContextToProps(context, ownProps), ownProps))
           )}
         </ContextConsumer>
       );
